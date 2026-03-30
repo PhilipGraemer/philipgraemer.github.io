@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip Graemer — Deep Learning for Biomedical Microscopy</title>
+    <meta name="description" content="PhD student at the University of Strathclyde. Deep learning and computer vision for biomedical microscopy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c1f26;
+            --ink-light: #4a4f5c;
+            --ink-muted: #7c8190;
+            --bg: #faf9f6;
+            --bg-warm: #f3f1ec;
+            --accent: #2e4a62;
+            --accent-light: #3d6b8e;
+            --rule: #d4d0c8;
+            --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+            --sans: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--sans);
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--ink);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 5rem 0 3rem;
+            border-bottom: 1px solid var(--rule);
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 2.6rem;
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 0.6rem;
+        }
+
+        header .subtitle {
+            font-family: var(--sans);
+            font-weight: 300;
+            font-size: 1.05rem;
+            color: var(--ink-light);
+            line-height: 1.5;
+        }
+
+        header .subtitle a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid var(--rule);
+            transition: border-color 0.2s;
+        }
+
+        header .subtitle a:hover {
+            border-color: var(--accent);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            margin-top: 1.6rem;
+            display: flex;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            font-family: var(--sans);
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        /* --- Sections --- */
+        section {
+            margin-bottom: 3.5rem;
+        }
+
+        section h2 {
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 1.55rem;
+            color: var(--ink);
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.005em;
+        }
+
+        section p {
+            margin-bottom: 1rem;
+            color: var(--ink-light);
+        }
+
+        section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- About (the main statement) --- */
+        .about p {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        /* --- Results highlight --- */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .results-table th {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-muted);
+            text-align: left;
+            padding: 0.6rem 1rem 0.6rem 0;
+            border-bottom: 2px solid var(--ink);
+        }
+
+        .results-table td {
+            padding: 0.55rem 1rem 0.55rem 0;
+            border-bottom: 1px solid var(--rule);
+            color: var(--ink-light);
+            vertical-align: top;
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .results-table .highlight {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .results-table .note {
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+
+        /* --- Paper block --- */
+        .paper {
+            background: var(--bg-warm);
+            padding: 1.5rem 1.8rem;
+            border-left: 3px solid var(--accent);
+            margin: 1.5rem 0;
+        }
+
+        .paper .title {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: var(--ink);
+            line-height: 1.4;
+            margin-bottom: 0.4rem;
+        }
+
+        .paper .authors {
+            font-size: 0.88rem;
+            color: var(--ink-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .paper .venue {
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+
+        .paper .links {
+            margin-top: 0.7rem;
+            display: flex;
+            gap: 1.2rem;
+        }
+
+        .paper .links a {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .paper .links a:hover {
+            border-color: var(--accent);
+        }
+
+        .paper .links .coming-soon {
+            color: var(--ink-muted);
+            font-weight: 400;
+            font-style: italic;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        /* --- Code repos --- */
+        .repo {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .repo:last-child {
+            border-bottom: none;
+        }
+
+        .repo a.repo-name {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .repo a.repo-name:hover {
+            color: var(--accent-light);
+        }
+
+        .repo .repo-desc {
+            font-size: 0.88rem;
+            color: var(--ink-muted);
+            margin-top: 0.3rem;
+            line-height: 1.6;
+        }
+
+        .repo .repo-tags {
+            margin-top: 0.45rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .repo .repo-tags span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--ink-muted);
+            background: var(--bg-warm);
+            padding: 0.15rem 0.55rem;
+            border-radius: 3px;
+        }
+
+        /* --- Contact --- */
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .contact-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--rule);
+            transition: border-color 0.2s;
+            width: fit-content;
+        }
+
+        .contact-links a:hover {
+            border-color: var(--accent);
+        }
+
+        .contact-links .label {
+            display: inline-block;
+            width: 6.5rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-muted);
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid var(--rule);
+            padding: 2rem 0 4rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            html { font-size: 16px; }
+            header { padding: 3rem 0 2rem; }
+            header h1 { font-size: 2rem; }
+            .container { padding: 0 1.4rem; }
+            .contact-links .label { width: 5.5rem; }
+        }
+
+        /* --- Subtle entrance --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section, header {
+            animation: fadeIn 0.5s ease-out both;
+        }
+
+        section:nth-child(2) { animation-delay: 0.05s; }
+        section:nth-child(3) { animation-delay: 0.1s; }
+        section:nth-child(4) { animation-delay: 0.15s; }
+        section:nth-child(5) { animation-delay: 0.2s; }
+        section:nth-child(6) { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Philip Graemer</h1>
+            <p class="subtitle">
+                PhD student · Deep learning for biomedical microscopy<br>
+                <a href="https://www.strath.ac.uk/">University of Strathclyde</a> &amp; <a href="https://www.gla.ac.uk/">University of Glasgow</a>
+                · Supervised by <a href="https://dicaprio.bioe.strath.ac.uk">Dr Giuseppe Di Caprio</a>
+            </p>
+            <nav>
+                <a href="#about">About</a>
+                <a href="#research">Research</a>
+                <a href="#publications">Publications</a>
+                <a href="#code">Code</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="about" class="about">
+                <h2>About</h2>
+                <p>
+                    I study how modern vision architectures learn, transfer, and fail when moved from natural images
+                    into biomedical microscopy. Microcopy is a domain where standard assumptions of computer vision can break
+                    down in informative ways.
+                </p>
+                <p>
+                    My current work centres on a controlled benchmark comparing CNNs and Vision Transformers for
+                    single-cell classification on the LIVECell dataset, where I found that previously reported CNN
+                    superiority is an artefact of unmatched pretraining. I also found that standard optimisation recipes like
+                    layer-wise learning rate decay can unexpectedly hurt under domain shift.
+                </p>
+                <p>
+                    I'm now building on these findings through domain-adaptive self-supervised learning (PhaseDINO),
+                    knowledge distillation, and cross-modality robustness testing.
+                </p>
+                <p>
+                    More broadly, I'm interested in the questions beyond the benchmarks: What makes one
+                    representation transfer better than another? Why do some training recipes fail outside their
+                    native domain? How do inductive biases interact with pretraining regime and dataset size?
+                </p>
+                <p>
+                    My path to these questions came through analytical philosophy, formal logics, epistemology, 
+                    psychology, and neuroscience before arriving at machine learning. I've always been drawn 
+                    to how systems form knowledge and why they sometimes get it wrong. And I am still 
+                    interested in how these disciplines can inform ML and how ML can inform them. My studies
+                    of ML have also brought me to look deeper into mathematics, especially analysis. Being close
+                    to the formal logics and analytic philosophy I started with, this somewhat completes the circle.
+                </p>
+            </section>
+
+            <section id="research">
+                <h2>Selected results</h2>
+                <p>
+                    From a controlled comparison of eleven architectures on LIVECell 8-class single-cell
+                    classification, with matched pretraining conditions across all models:
+                </p>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Architecture</th>
+                            <th>Macro F1</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EfficientNet-B5</td>
+                            <td class="highlight">93.53%</td>
+                            <td class="note">Best single model</td>
+                        </tr>
+                        <tr>
+                            <td>3×EVA-02 council → EN-B0</td>
+                            <td class="highlight">93.42%</td>
+                            <td class="note">Council distillation</td>
+                        </tr>
+                        <tr>
+                            <td>Swin-B</td>
+                            <td>92.30%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>EVA-02 (ViT-L/14)</td>
+                            <td>92.26%</td>
+                            <td class="note">Better teacher than EN-B5</td>
+                        </tr>
+                        <tr>
+                            <td>ViT-S/8</td>
+                            <td>91.94%</td>
+                            <td class="note">Matches EVA-02 at ¼ parameters, better than the larger ViT-B/16</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    Layer-wise learning rate decay (LLRD) and some other regularisation methods widely used
+                    for fine-tuning pretrained transformers, consistently hurt performance under this domain shift,
+                    a finding with implications for how standard NLP-derived training recipes are adopted 
+                    in biomedical vision.
+                </p>
+            </section>
+
+            <section id="publications">
+                <h2>Publications</h2>
+                <div class="paper">
+                    <div class="title">
+                        Pretraining Inverts the CNN–ViT Ranking for Single-Cell Classification: A Controlled Benchmark on LIVECell
+                    </div>
+                    <div class="authors">Philip Graemer, Giuseppe Di Caprio</div>
+                    <div class="venue">Manuscript in preparation · targeting arXiv 2026</div>
+                    <div class="links">
+                        <span class="coming-soon">arXiv link coming soon</span>
+                        <!-- <a href="#">arXiv</a> -->
+                        <!-- <a href="#">PDF</a> -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="code">
+                <h2>Code</h2>
+                <div class="repo">
+                    <a class="repo-name" href="https://github.com/PhilipGraemer/livecell-classification-benchmark">livecell-classification-benchmark</a>
+                    <p class="repo-desc">Controlled benchmark comparing CNN and Vision Transformer architectures for single-cell classification on LIVECell. Eleven architectures, pretrained and scratch conditions, multi-seed reproducibility.</p>
+                    <div class="repo-tags">
+                        <span>PyTorch</span>
+                        <span>timm</span>
+                        <span>Lightning</span>
+                        <span>A100</span>
+                    </div>
+                </div>
+                <div class="repo">
+                    <a class="repo-name" href="https://github.com/PhilipGraemer/livecell-distillation">livecell-distillation</a>
+                    <p class="repo-desc">Cross-architecture knowledge distillation. Temperature-scaled soft labels, combined hard/soft loss, council distillation. Didactic codebase with extensive inline documentation.</p>
+                    <div class="repo-tags">
+                        <span>PyTorch</span>
+                        <span>Lightning</span>
+                        <span>Knowledge distillation</span>
+                    </div>
+                </div>
+                <div class="repo">
+                    <a class="repo-name" href="https://github.com/PhilipGraemer/segmentation-crop-checker">segmentation-crop-checker</a>
+                    <p class="repo-desc">Validation tool for single-cell crops extracted from segmentation masks. Flags multi-cell crops, boundary truncation, size outliers, and mask coverage issues.</p>
+                    <div class="repo-tags">
+                        <span>Python</span>
+                        <span>Quality control</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact">
+                <h2>Contact</h2>
+                <div class="contact-links">
+                    <div>
+                        <span class="label">Email</span>
+                        <a href="mailto:philip.graemer@strath.ac.uk">philip.graemer@strath.ac.uk</a>
+                    </div>
+                    <div>
+                        <span class="label">Lab</span>
+                        <a href="https://dicaprio.bioe.strath.ac.uk">Di Caprio Lab</a>
+                    </div>
+                    <div>
+                        <span class="label">LinkedIn</span>
+                        <a href="https://www.linkedin.com/in/philip-graemer-915a91232/">Philip Graemer</a>
+                    </div>
+                    <div>
+                        <span class="label">ORCID</span>
+                        <a href="https://orcid.org/0009-0000-8107-6856">Profile</a>
+                    </div>
+                    <!-- Uncomment when available:
+                    <div>
+                        <span class="label">Scholar</span>
+                        <a href="#">Google Scholar</a>
+                    </div>
+                    <div>
+                        <span class="label">arXiv</span>
+                        <a href="#">Author page</a>
+                    </div>
+                    -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Philip Graemer · University of Strathclyde &amp; University of Glasgow · 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
