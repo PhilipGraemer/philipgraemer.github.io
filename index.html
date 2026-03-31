@@ -308,6 +308,78 @@
             color: var(--ink-muted);
         }
 
+        /* --- Gallery --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .gallery-grid .wide {
+            grid-column: 1 / -1;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 3px;
+            background: #000;
+            line-height: 0;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.92;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.03);
+            opacity: 1;
+        }
+
+        .gallery-item .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.5rem 0.7rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.75));
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .caption {
+            opacity: 1;
+        }
+
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item.tall img {
+            height: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-item .caption {
+                opacity: 1;
+            }
+        }
+
         /* --- Footer --- */
         footer {
             border-top: 1px solid var(--rule);
@@ -358,6 +430,7 @@
             <nav>
                 <a href="#about">About</a>
                 <a href="#research">Research</a>
+                <a href="#gallery">Gallery</a>
                 <a href="#publications">Publications</a>
                 <a href="#code">Code</a>
                 <a href="#contact">Contact</a>
@@ -368,35 +441,29 @@
             <section id="about" class="about">
                 <h2>About</h2>
                 <p>
-                    I study how modern vision architectures including ViTs and CNNs learn, transfer, and fail when moved 
-                    from natural images into biomedical microscopy. Microscopy is a domain where standard assumptions of 
-                    computer vision can break down in informative ways. Microscopy can also directly impact people’s lives
-                    when used in medicine. It is thus both fascinating and impactful.
+                    I study how modern vision architectures learn, transfer, and fail when moved from natural images
+                    into biomedical microscopy — a domain where the standard assumptions of computer vision break
+                    down in informative ways.
                 </p>
                 <p>
                     My current work centres on a controlled benchmark comparing CNNs and Vision Transformers for
                     single-cell classification on the LIVECell dataset, where I found that previously reported CNN
-                    superiority is an artefact of unmatched pretraining. I also found that standard optimisation recipes
-                    can unexpectedly hurt performance under domain shift. I have  theories for why this might be the case, 
-                    which I am currently testing empirically.
+                    superiority is an artefact of unmatched pretraining, and that standard optimisation recipes like
+                    layer-wise learning rate decay can unexpectedly hurt under domain shift.
                 </p>
                 <p>
-                    To build on these findings I am using domain-adaptive self-supervised learning,
+                    I'm now building on these findings through domain-adaptive self-supervised learning (PhaseDINO),
                     knowledge distillation, and cross-modality robustness testing.
                 </p>
                 <p>
-                    More broadly, I'm interested in questions beyond benchmarks: What makes one
+                    More broadly, I'm interested in the questions that sit beneath the benchmarks: what makes one
                     representation transfer better than another? Why do some training recipes fail outside their
-                    native domain? How do inductive biases interact with pretraining regime and dataset size?
+                    native domain? How do inductive biases interact with pretraining regime?
                 </p>
                 <p>
-                    My path to these questions came through analytical philosophy, formal logic, epistemology, 
-                    psychology, and neuroscience before arriving at machine learning. I've always been drawn 
-                    to how systems form knowledge and why they sometimes get it wrong. And I am still 
-                    interested in how these disciplines can inform ML and how ML can inform them. My study of ML 
-                    has recently drawn me deeper into mathematics, especially analysis. Because this returns me to 
-                    terrain close to the formal logic and analytic philosophy with which I began, it feels in
-                    some sense like a return to first principles.
+                    My path to these questions came through analytical philosophy, psychology, and neuroscience
+                    before arriving at machine learning — I've always been drawn to how systems form knowledge
+                    and why they sometimes get it wrong.
                 </p>
             </section>
 
@@ -411,68 +478,100 @@
                         <tr>
                             <th>Architecture</th>
                             <th>Macro F1</th>
-                            <th>Accuracy</th>
                             <th>Note</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>EfficientNet-B5</td>
-                            <td class="highlight">92.25%</td>
                             <td class="highlight">93.53%</td>
                             <td class="note">Best single model</td>
                         </tr>
                         <tr>
-                            <td>EVA-02 Base</td>
-                            <td>90.51%</td>
-                            <td>92.26%</td>
-                            <td class="note">Best teacher for distillation</td>
+                            <td>3×EVA-02 council → EN-B0</td>
+                            <td class="highlight">93.42%</td>
+                            <td class="note">Council distillation; 21× fewer params</td>
                         </tr>
                         <tr>
                             <td>EVA-02 → EN-B0</td>
-                            <td class="highlight">91.01%</td>
-                            <td class="highlight">92.67%</td>
+                            <td>92.67%</td>
                             <td class="note">Cross-arch distillation</td>
                         </tr>
                         <tr>
+                            <td>Swin-B</td>
+                            <td>92.30%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>EVA-02 (ViT-L/14)</td>
+                            <td>92.26%</td>
+                            <td class="note">Better teacher than EN-B5</td>
+                        </tr>
+                        <tr>
                             <td>EN-B5 → EN-B0</td>
-                            <td>91.01%</td>
                             <td>92.18%</td>
                             <td class="note">Same-family distillation</td>
                         </tr>
                         <tr>
-                            <td>2xEVA-02 + EN-B5 council → EN-B0</td>
-                            <td>91.41%</td>
-                            <td>92.86</td>
-                            <td class="note">Mixed council distillation</td>
-                        </tr>
-                        <tr>
-                            <td>3×EVA-02 Base council → EN-B0</td>
-                            <td class="highlight">92.05%</td>
-                            <td class="highlight">93.42%</td>
-                            <td class="note">ViT council distillation. Best distillation</td>
-                        </tr>
-                        <tr>
-                            <td>ViT-B/16</td>
-                            <td>89.93%</td>
-                            <td>91.94%</td>
-                            <td></td>
-                        </tr>
-                        <tr>
                             <td>ViT-S/8</td>
-                            <td>90.61%</td>
-                            <td>92.20%</td>
-                            <td class="note">Matches EVA-02 at ¼ parameters, better than the larger ViT-B/16 due to smaller patches/finer tokenisation</td>
+                            <td>91.94%</td>
+                            <td class="note">Matches EVA-02 at ¼ parameters</td>
                         </tr>
                     </tbody>
                 </table>
+                <p>
+                    Layer-wise learning rate decay (LLRD), widely used for fine-tuning pretrained transformers,
+                    consistently hurts performance under this domain shift — a finding with implications for
+                    how standard NLP-derived training recipes are adopted in biomedical vision.
+                </p>
+            </section>
+
+            <section id="gallery">
+                <h2>Gallery</h2>
+                <p>
+                    Impressions from the bench, the microscope, and the training loop.
+                </p>
+                <div class="gallery-grid">
+                    <div class="gallery-item wide">
+                        <img src="img/pipeline.png" alt="Raw data → Segmentation → Classification pipeline">
+                        <span class="caption">LIVECell pipeline: phase-contrast images → instance segmentation → single-cell classification</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/phase_contrast.png" alt="Phase-contrast microscopy of MG-63 cells">
+                        <span class="caption">MG-63 osteosarcoma cells, phase-contrast 20×</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/segmentation_mask.png" alt="Colour-coded instance segmentation mask">
+                        <span class="caption">Instance segmentation mask — each colour is a single cell</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/amphipod_claw.png" alt="Autofluorescence microscopy of amphipod copulatory claw">
+                        <span class="caption">Amphipod copulatory claw, autofluorescence, 200 µm scale bar</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/well_plate.png" alt="24-well plate with ALP and Alizarin Red staining">
+                        <span class="caption">24-well plate: ALP (blue), Alizarin Red (red), unstained controls</span>
+                    </div>
+                    <div class="gallery-item wide">
+                        <img src="img/confusion_matrices.png" alt="Confusion matrices: Custom CNN vs EVA-02">
+                        <span class="caption">Custom CNN (84% macro F1) vs pretrained EVA-02 (93%) — pretraining closes the gap on every class</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/amphipod_3d.png" alt="3D volume rendering of amphipod">
+                        <span class="caption">3D volume rendering of amphipod, multi-channel fluorescence</span>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="img/dense_mask.png" alt="Dense instance segmentation with 574 cells">
+                        <span class="caption">574 segmented instances in a single field of view</span>
+                    </div>
+                </div>
             </section>
 
             <section id="publications">
                 <h2>Publications</h2>
                 <div class="paper">
                     <div class="title">
-                        Pretraining and the CNN–ViT Ranking for Single-Cell Classification: A Controlled Benchmark on LIVECell
+                        Pretraining Inverts the CNN–ViT Ranking for Single-Cell Classification: A Controlled Benchmark on LIVECell
                     </div>
                     <div class="authors">Philip Graemer, Giuseppe Di Caprio</div>
                     <div class="venue">Manuscript in preparation · targeting arXiv 2026</div>
@@ -510,8 +609,6 @@
                     <p class="repo-desc">Validation tool for single-cell crops extracted from segmentation masks. Flags multi-cell crops, boundary truncation, size outliers, and mask coverage issues.</p>
                     <div class="repo-tags">
                         <span>Python</span>
-                        <span>h5py</span>
-                        <span>matplotlib</span>
                         <span>Quality control</span>
                     </div>
                 </div>
@@ -530,11 +627,11 @@
                     </div>
                     <div>
                         <span class="label">LinkedIn</span>
-                        <a href="https://www.linkedin.com/in/philip-graemer-915a91232/">Philip Graemer</a>
+                        <a href="https://linkedin.com/in/philipgraemer">Philip Graemer</a>
                     </div>
                     <div>
                         <span class="label">ORCID</span>
-                        <a href="https://orcid.org/0009-0000-8107-6856">Profile</a>
+                        <a href="https://orcid.org/">Profile</a>
                     </div>
                     <!-- Uncomment when available:
                     <div>
