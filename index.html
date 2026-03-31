@@ -410,7 +410,7 @@
                     <thead>
                         <tr>
                             <th>Architecture</th>
-                            <th>Macro F1</th>
+                            <th>Accuracy</th>
                             <th>Note</th>
                         </tr>
                     </thead>
@@ -421,24 +421,39 @@
                             <td class="note">Best single model</td>
                         </tr>
                         <tr>
-                            <td>3×EVA-02 Base council → EN-B0</td>
-                            <td class="highlight">93.42%</td>
-                            <td class="note">Council distillation</td>
-                        </tr>
-                        <tr>
-                            <td>Swin-B</td>
-                            <td>92.30%</td>
-                            <td></td>
-                        </tr>
-                        <tr>
                             <td>EVA-02 Base</td>
                             <td>92.26%</td>
                             <td class="note">Better teacher than EN-B5</td>
                         </tr>
                         <tr>
+                            <td>EVA-02 → EN-B0</td>
+                            <td>92.67%</td>
+                            <td class="note">Cross-arch distillation</td>
+                        </tr>
+                        <tr>
+                            <td>EN-B5 → EN-B0</td>
+                            <td>92.18%</td>
+                            <td class="note">Same-family distillation</td>
+                        </tr>
+                        <tr>
+                            <td>3×EVA-02 Base council → EN-B0</td>
+                            <td class="highlight">93.42%</td>
+                            <td class="note">Council distillation</td>
+                        </tr>
+                        <tr>
+                            <td>3×EVA-02 Base council → EN-B0</td>
+                            <td class="highlight">93.42%</td>
+                            <td class="note">Mixed council distillation</td>
+                        </tr>
+                        <tr>
+                            <td>ViT-B/16</td>
+                            <td>91.98%</td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td>ViT-S/8</td>
-                            <td>91.94%</td>
-                            <td class="note">Matches EVA-02 at ¼ parameters, better than the larger ViT-B/16</td>
+                            <td>92.20%</td>
+                            <td class="note">Matches EVA-02 at ¼ parameters, better than the larger ViT-B/16 due to smaller patches/finer tokenisation</td>
                         </tr>
                     </tbody>
                 </table>
@@ -448,7 +463,7 @@
                 <h2>Publications</h2>
                 <div class="paper">
                     <div class="title">
-                        Pretraining Inverts the CNN–ViT Ranking for Single-Cell Classification: A Controlled Benchmark on LIVECell
+                        Pretraining and the CNN–ViT Ranking for Single-Cell Classification: A Controlled Benchmark on LIVECell
                     </div>
                     <div class="authors">Philip Graemer, Giuseppe Di Caprio</div>
                     <div class="venue">Manuscript in preparation · targeting arXiv 2026</div>
